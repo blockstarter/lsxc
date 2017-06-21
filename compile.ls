@@ -30,10 +30,15 @@ module.exports = (commander)->
        save "#{sass}.sass", code.sass
     if compilesass?
        console.log "Compile SASS"
-       css = sass.render-sync do 
-           data: code.sass
-           indented-syntax: yes
-       save "#{compilesass}.css", code.css
+       state =
+          css: ""
+       try 
+           state.css = sass.render-sync do
+               data: code.sass
+               indented-syntax: yes
+           save "#{compilesass}.css", state.css
+       catch err
+           console.error "Compile SASS Error #{err.message ? err}"
     basedir = process.cwd!
     make-bundle = (file, callback)->
         options = 

@@ -14,7 +14,7 @@
     return fs.writeFileSync(file, content);
   };
   module.exports = function(commander){
-    var file, target, ref$, bundle, html, sass, compilesass, input, code, js, css, basedir, makeBundle;
+    var file, target, ref$, bundle, html, sass, compilesass, input, code, js, state, err, basedir, makeBundle;
     file = commander.compile;
     if (file == null) {
       return console.error('File is required');
@@ -42,11 +42,19 @@
     }
     if (compilesass != null) {
       console.log("Compile SASS");
-      css = sass.renderSync({
-        data: code.sass,
-        indentedSyntax: true
-      });
-      save(compilesass + ".css", code.css);
+      state = {
+        css: ""
+      };
+      try {
+        state.css = sass.renderSync({
+          data: code.sass,
+          indentedSyntax: true
+        });
+        save(compilesass + ".css", state.css);
+      } catch (e$) {
+        err = e$;
+        console.error("Compile SASS Error " + ((ref$ = err.message) != null ? ref$ : err));
+      }
     }
     basedir = process.cwd();
     makeBundle = function(file, callback){
