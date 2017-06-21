@@ -12,5 +12,5 @@ commander
   .option('-h, --html', 'Generate HTML included bundle.js for demo.' + opt)
   .parse(process.argv);
 
-compile commander
+compile(commander);
   
