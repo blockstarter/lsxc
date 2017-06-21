@@ -10,7 +10,7 @@
   commander = require('commander');
   module.exports = function(commander){
     var file, target, ref$, bundle, html, input, code, js, basedir, makeBundle;
-    file = commander.file;
+    file = commander.compile;
     if (file == null) {
       return console.error('File is required');
     }

@@ -9,7 +9,7 @@ require! {
 }
 
 module.exports = (commander)->
-    file = commander.file
+    file = commander.compile
     return console.error('File is required') if not file?
     target = commander.target ? file
     bundle = commander.bundle ? \bundle

@@ -5,7 +5,7 @@ var compile = require('./compile.js');
 opt = ' Optional';
 commander
   .version('0.0.1')
-  .option('-f, --file [filename]', 'Main File. Without extension')
+  .option('-c, --compile [filename]', 'Main File. Without extension')
   .option('-t, --target [filename]', 'Result File (result.js).' + opt)
   .option('-b, --bundle [filename]', 'Generate bundle.js' + opt)
   .option('-h, --html', 'Generate HTML included bundle.js for demo.' + opt)
