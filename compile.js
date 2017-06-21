@@ -46,12 +46,12 @@
       });
       bundle = b.bundle();
       string = "";
-      return bundle.on('data', function(data){
-        bundle.on('error', function(error){});
-        string += data.toString();
-        bundle.on('end', function(_){
-          callback(null, string);
-        });
+      bundle.on('data', function(data){
+        return string += data.toString();
+      });
+      bundle.on('error', function(error){});
+      return bundle.on('end', function(_){
+        callback(null, string);
       });
     };
     if (commander.bundle == null) {

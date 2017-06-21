@@ -38,10 +38,10 @@ module.exports = (commander)->
         browserify-inc b, {cacheFile: file + ".cache"}
         bundle = b.bundle!
         string = ""
-        data <-! bundle.on \data
+        bundle.on \data, (data)->
+          string += data.to-string!
         bundle.on \error, (error)->
              #console.error error
-        string += data.to-string!
         _ <-! bundle.on \end
         callback null, string
     
