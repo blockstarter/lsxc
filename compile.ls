@@ -47,9 +47,9 @@ module.exports = (commander)->
     
     return if not commander.bundle?
     console.log "Current Directory " + basedir
-    #err, bundle <-! make-bundle "#{target}.js"
-    #return console.error err if err?
-    #save("#{bundle}.js", bundle)
+    err, bundlec <-! make-bundle "#{target}.js"
+    return console.error err if err?
+    save("#{bundle}.js", bundlec)
     
     
     return if not commander.html?

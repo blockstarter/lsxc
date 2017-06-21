@@ -13,7 +13,7 @@
     return fs.writeFileSync(file, content);
   };
   module.exports = function(commander){
-    var file, target, ref$, bundle, html, input, code, js, basedir, makeBundle, print;
+    var file, target, ref$, bundle, html, input, code, js, basedir, makeBundle;
     file = commander.compile;
     if (file == null) {
       return console.error('File is required');
@@ -58,11 +58,18 @@
       return;
     }
     console.log("Current Directory " + basedir);
-    if (commander.html == null) {
-      return;
-    }
-    print = '<!DOCTYPE html>\n<html lang="en-us">\n  <head>\n   <meta charset="utf-8">\n   <title>Hello...</title>\n  </head>\n  <script type="text/javascript" src="./bundle.js"></script>\n</html>';
-    console.log("Save " + html + ".js");
-    return save(html + "", print);
+    return makeBundle(target + ".js", function(err, bundlec){
+      var print;
+      if (err != null) {
+        return console.error(err);
+      }
+      save(bundle + ".js", bundlec);
+      if (commander.html == null) {
+        return;
+      }
+      print = '<!DOCTYPE html>\n<html lang="en-us">\n  <head>\n   <meta charset="utf-8">\n   <title>Hello...</title>\n  </head>\n  <script type="text/javascript" src="./bundle.js"></script>\n</html>';
+      console.log("Save " + html + ".js");
+      save(html + "", print);
+    });
   };
 }).call(this);
