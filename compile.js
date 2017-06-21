@@ -15,8 +15,12 @@
       return console.error('File is required');
     }
     target = (ref$ = commander.target) != null ? ref$ : file;
-    bundle = commander.bundle ? 'bundle' : null;
-    html = commander.html ? 'index' : null;
+    bundle = commander.bundle === true
+      ? 'bundle'
+      : commander.bundle;
+    html = commander.html === true
+      ? 'index'
+      : commander.html;
     input = file + ".ls";
     console.log("Compile " + input);
     code = reactify(fs.readFileSync(input).toString('utf-8'));
