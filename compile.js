@@ -28,7 +28,7 @@
     input = file + ".ls";
     console.log("Compile " + input);
     code = reactify(fs.readFileSync(input).toString('utf-8'));
-    js = livescript.compile(code);
+    js = livescript.compile(code.ls);
     save(target + ".js", js);
     basedir = process.cwd();
     makeBundle = function(file, callback){

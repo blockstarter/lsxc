@@ -22,7 +22,7 @@ module.exports = (commander)->
     input = "#{file}.ls"
     console.log "Compile " + input
     code = reactify fs.read-file-sync(input).to-string(\utf-8)
-    js = livescript.compile code
+    js = livescript.compile code.ls
     save "#{target}.js", js
     
     basedir = process.cwd!
@@ -34,7 +34,7 @@ module.exports = (commander)->
             debug: no 
             commondir: no
             entries: [file]
-        b = browserify(xtend(browserify-inc.args, options)) 
+        b = browserify xtend(browserify-inc.args, options)
         browserify-inc b, {cacheFile: file + ".cache"}
         bundle = b.bundle!
         string = ""
