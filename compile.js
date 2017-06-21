@@ -52,7 +52,7 @@
           data: code.sass,
           indentedSyntax: true
         });
-        save(compilesass + ".css", state.css);
+        save(compilesass + ".css", state.css.css);
       } catch (e$) {
         err = e$;
         console.error("Compile SASS Error " + ((ref$ = err.message) != null ? ref$ : err));

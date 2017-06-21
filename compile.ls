@@ -38,7 +38,7 @@ module.exports = (commander)->
            state.css = sassc.render-sync do
                data: code.sass
                indented-syntax: yes
-           save "#{compilesass}.css", state.css
+           save "#{compilesass}.css", state.css.css
        catch err
            console.error "Compile SASS Error #{err.message ? err}"
     
