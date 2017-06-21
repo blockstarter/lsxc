@@ -29,6 +29,7 @@ module.exports = (commander)->
     if sass?
        save "#{sass}.sass", code.sass
     if compilesass?
+       console.log "Compile SASS"
        css = sass.render-sync do 
            data: code.sass
            indented-syntax: yes

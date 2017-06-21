@@ -41,6 +41,7 @@
       save(sass + ".sass", code.sass);
     }
     if (compilesass != null) {
+      console.log("Compile SASS");
       css = sass.renderSync({
         data: code.sass,
         indentedSyntax: true
