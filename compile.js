@@ -15,14 +15,14 @@
       return console.error('File is required');
     }
     target = (ref$ = commander.target) != null ? ref$ : file;
-    bundle = (ref$ = commander.bundle) != null ? ref$ : 'bundle';
-    html = (ref$ = commander.html) != null ? ref$ : 'index';
+    bundle = commander.bundle ? 'bundle' : null;
+    html = commander.html ? 'index' : null;
     input = file + ".ls";
     console.log("Compile " + input);
     code = reactify(fs.readFileSync(input).toString('utf-8'));
     js = livescript.compile(code);
     fs.writeFileSync(target + ".js", js);
-    basedir = __dirname;
+    basedir = process.cwd();
     makeBundle = function(file, callback){
       var options, b, bundle, string;
       options = {
@@ -51,7 +51,7 @@
     if (commander.bundle == null) {
       return;
     }
-    console.log("Current Directory ".yellow + basedir);
+    console.log("Current Directory " + basedir);
     return makeBundle(target + ".js", function(err, bundle){
       var print;
       fs.writeFileSync(bundle + ".js", bundle);

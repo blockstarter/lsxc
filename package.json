@@ -1,5 +1,12 @@
 {
-  "devDependencies": {},
+  "uperversion": "0.0",
+  "subversion": 11,
+  "version": "0.0.11",
+  "description": "Compile Livescript + Pug + React",
+  "main": "compile.js",
+  "bin": {
+    "lsxc": "./lsxc"
+  },
   "dependencies": {
     "browserify": "^14.4.0",
     "browserify-incremental": "^3.1.1",
@@ -9,31 +16,24 @@
     "reactify-ls": "^0.1.98",
     "xtend": "^4.0.1"
   },
-  "bin": {
-    "lsxc": "./lsxc"
+  "devDependencies": {},
+  "name": "lsxc",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "main": "compile.js",
-  "description": "Compile Livescript + Pug + React",
-  "version": "0.0.10",
-  "subversion": 10,
-  "uperversion": "0.0",
-  "homepage": "https://github.com/askucher/lsxc#readme",
-  "bugs": {
-    "url": "https://github.com/askucher/lsxc/issues"
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/askucher/lsxc.git"
   },
-  "license": "ISC",
-  "author": "flyber",
   "keywords": [
     "react",
     "livescript",
     "pug"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/askucher/lsxc.git"
+  "author": "flyber",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/askucher/lsxc/issues"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "name": "lsxc"
+  "homepage": "https://github.com/askucher/lsxc#readme"
 }

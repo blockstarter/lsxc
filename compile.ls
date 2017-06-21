@@ -12,8 +12,8 @@ module.exports = (commander)->
     file = commander.compile
     return console.error('File is required') if not file?
     target = commander.target ? file
-    bundle = commander.bundle ? \bundle
-    html = commander.html ? \index
+    bundle = if commander.bundle then \bundle else null
+    html = if commander.html then \index else null
     
     input = "#{file}.ls"
     console.log "Compile " + input
@@ -22,7 +22,7 @@ module.exports = (commander)->
     
     fs.write-file-sync("#{target}.js", js)
     
-    basedir = __dirname
+    basedir = process.cwd!
     
     make-bundle = (file, callback)->
         options = 
@@ -43,7 +43,7 @@ module.exports = (commander)->
         callback null, string
     
     return if not commander.bundle?
-    console.log "Current Directory ".yellow + basedir
+    console.log "Current Directory " + basedir
     err, bundle <-! make-bundle "#{target}.js"
     fs.write-file-sync("#{bundle}.js", bundle)
     
