@@ -15,6 +15,7 @@ save = (file, content)->
     fs.write-file-sync(file, content)
 
 setup-watch = (commander)->
+    setup-watch.enabled = yes
     return if setup-watch.$
     setup-watch.$ = yes
     watch do 
@@ -23,9 +24,11 @@ setup-watch = (commander)->
           filter: (name)->
              !/node_modules/.test(name) and !/\.git/.test(name)
         * ->
+             return if setup-watch.enabled is no
              compile commander
 
 compile = (commander)->
+    setup-watch.enabled = no
     basedir = process.cwd!
     console.log "Current Directory " + basedir
     file = commander.compile

@@ -15,6 +15,7 @@
     return fs.writeFileSync(file, content);
   };
   setupWatch = function(commander){
+    setupWatch.enabled = true;
     if (setupWatch.$) {
       return;
     }
@@ -25,11 +26,15 @@
         return !/node_modules/.test(name) && !/\.git/.test(name);
       }
     }, function(){
+      if (setupWatch.enabled === false) {
+        return;
+      }
       return compile(commander);
     });
   };
   compile = function(commander){
     var basedir, file, target, ref$, bundle, html, sass, compilesass, input, code, js, state, err, makeBundle, print;
+    setupWatch.enabled = false;
     basedir = process.cwd();
     console.log("Current Directory " + basedir);
     file = commander.compile;
