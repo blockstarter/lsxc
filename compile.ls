@@ -9,7 +9,7 @@ require! {
     \colors
 }
 
-opt = ' Optional'.orange
+opt = ' Optional'.yellow
 commander
   .version('0.0.1')
   .option('-f, --file [filename]', 'Main File. Without extension')
@@ -26,15 +26,14 @@ target = commander.target ? file
 bundle = commander.bundle ? \bundle
 html = commander.html ? \index
 
-
-
-code = reactify fs.read-file-sync("#{file}.ls").to-string(\utf-8)
+input = "#{file}.ls"
+console.log "Compile ".yellow + input
+code = reactify fs.read-file-sync(input).to-string(\utf-8)
 js = livescript.compile code
 
 fs.write-file-sync("#{target}.js", js)
 
 basedir = __dirname
-
 
 make-bundle = (file, callback)->
     options = 
@@ -55,6 +54,7 @@ make-bundle = (file, callback)->
     callback null, string
 
 return if not commander.bundle?
+console.log "Current Directory ".yellow + basedir
 err, bundle <-! make-bundle "#{target}.js"
 fs.write-file-sync("#{bundle}.js", bundle)
 
