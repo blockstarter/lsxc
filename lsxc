@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 var commander = require('commander');
 var compile = require('./compile.js');
-require('colors');
 
-opt = ' Optional'.yellow;
+opt = ' Optional';
 commander
   .version('0.0.1')
   .option('-f, --file [filename]', 'Main File. Without extension')

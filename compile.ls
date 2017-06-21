@@ -6,7 +6,6 @@ require! {
     \browserify
     \xtend
     \commander
-    \colors
 }
 
 module.exports = (commander)->
@@ -17,7 +16,7 @@ module.exports = (commander)->
     html = commander.html ? \index
     
     input = "#{file}.ls"
-    console.log "Compile ".yellow + input
+    console.log "Compile " + input
     code = reactify fs.read-file-sync(input).to-string(\utf-8)
     js = livescript.compile code
     
@@ -59,7 +58,5 @@ module.exports = (commander)->
       </head>
       <script type="text/javascript" src="./bundle.js"></script>
     </html>
-    
     '''
-    
     fs.write-file-sync "#{html}", print
