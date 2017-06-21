@@ -12,8 +12,8 @@ module.exports = (commander)->
     file = commander.compile
     return console.error('File is required') if not file?
     target = commander.target ? file
-    bundle = if commander.bundle then \bundle else null
-    html = if commander.html then \index else null
+    bundle = if commander.bundle is yes ? \bundle else commander.bundle
+    html = if commander.html is yes then \index else commander.html
     
     input = "#{file}.ls"
     console.log "Compile " + input
