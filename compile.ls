@@ -63,5 +63,4 @@ module.exports = (commander)->
       <script type="text/javascript" src="./bundle.js"></script>
     </html>
     '''
-    console.log "Save #{html}.js"
-    save "#{html}", print
+    save "#{html}.html", print

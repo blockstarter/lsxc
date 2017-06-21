@@ -68,8 +68,7 @@
         return;
       }
       print = '<!DOCTYPE html>\n<html lang="en-us">\n  <head>\n   <meta charset="utf-8">\n   <title>Hello...</title>\n  </head>\n  <script type="text/javascript" src="./bundle.js"></script>\n</html>';
-      console.log("Save " + html + ".js");
-      save(html + "", print);
+      save(html + ".html", print);
     });
   };
 }).call(this);
