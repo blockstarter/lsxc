@@ -6,7 +6,7 @@ require! {
     \browserify
     \xtend
     \commander
-    \node-sass : \sass
+    \node-sass : \sassc
 }
 
 save = (file, content)->
@@ -14,6 +14,8 @@ save = (file, content)->
     fs.write-file-sync(file, content)
 
 module.exports = (commander)->
+    basedir = process.cwd!
+    console.log "Current Directory " + basedir
     file = commander.compile
     return console.error('File is required') if not file?
     target = commander.target ? file
@@ -33,13 +35,13 @@ module.exports = (commander)->
        state =
           css: ""
        try 
-           state.css = sass.render-sync do
+           state.css = sassc.render-sync do
                data: code.sass
                indented-syntax: yes
            save "#{compilesass}.css", state.css
        catch err
            console.error "Compile SASS Error #{err.message ? err}"
-    basedir = process.cwd!
+    
     make-bundle = (file, callback)->
         options = 
             basedir: basedir
@@ -59,7 +61,6 @@ module.exports = (commander)->
         callback null, string
     
     return if not commander.bundle?
-    console.log "Current Directory " + basedir
     err, bundlec <-! make-bundle "#{target}.js"
     return console.error err if err?
     save("#{bundle}.js", bundlec)
@@ -72,6 +73,7 @@ module.exports = (commander)->
       <head>
        <meta charset="utf-8">
        <title>Hello...</title>
+       <link rel="stylesheet" type="text/css" href="./style.css">
       </head>
       <script type="text/javascript" src="./bundle.js"></script>
     </html>
