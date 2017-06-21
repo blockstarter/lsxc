@@ -8,6 +8,10 @@ require! {
     \commander
 }
 
+save = (file, content)->
+    console.log "Save #{file}"
+    fs.write-file-sync(file, content)
+
 module.exports = (commander)->
     file = commander.compile
     return console.error('File is required') if not file?
@@ -19,8 +23,7 @@ module.exports = (commander)->
     console.log "Compile " + input
     code = reactify fs.read-file-sync(input).to-string(\utf-8)
     js = livescript.compile code
-    
-    fs.write-file-sync("#{target}.js", js)
+    save "#{target}.js", js
     
     basedir = process.cwd!
     
@@ -45,7 +48,8 @@ module.exports = (commander)->
     return if not commander.bundle?
     console.log "Current Directory " + basedir
     err, bundle <-! make-bundle "#{target}.js"
-    fs.write-file-sync("#{bundle}.js", bundle)
+    return console.error err if err?
+    save("#{bundle}.js", bundle)
     
     
     return if not commander.html?
@@ -59,4 +63,5 @@ module.exports = (commander)->
       <script type="text/javascript" src="./bundle.js"></script>
     </html>
     '''
-    fs.write-file-sync "#{html}", print
+    console.log "Save #{html}.js"
+    save "#{html}", print
