@@ -6,6 +6,9 @@ opt = ' Optional';
 commander
   .version('0.0.1')
   .option('-c, --compile [filename]', 'Main File. Without extension')
+  .option('-s, --sass [filename]', 'Result File (style.sass).' + opt)
+  .option('-k, --compilesass [filename]', 'Result File (style.css).' + opt)
+  .option('-w, --watch', 'Watch changes in folder and recompile (Under contruction).' + opt)
   .option('-t, --target [filename]', 'Result File (result.js).' + opt)
   .option('-b, --bundle [filename]', 'Generate bundle.js' + opt)
   .option('-h, --html', 'Generate HTML included bundle.js for demo.' + opt)

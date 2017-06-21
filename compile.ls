@@ -6,6 +6,7 @@ require! {
     \browserify
     \xtend
     \commander
+    \node-sass : \sass
 }
 
 save = (file, content)->
@@ -18,15 +19,21 @@ module.exports = (commander)->
     target = commander.target ? file
     bundle = if commander.bundle is yes then \bundle else commander.bundle
     html = if commander.html is yes then \index else commander.html
-    
+    sass = if commander.sass is yes then \style else commander.sass
+    compilesass = if commander.compilesass is yes then \style else commander.compilesass
     input = "#{file}.ls"
     console.log "Compile " + input
     code = reactify fs.read-file-sync(input).to-string(\utf-8)
     js = livescript.compile code.ls
     save "#{target}.js", js
-    
+    if sass?
+       save "#{sass}.sass", code.sass
+    if compilesass?
+       css = sass.render-sync do 
+           data: code.sass
+           indented-syntax: yes
+       save "#{compilesass}.css", code.css
     basedir = process.cwd!
-    
     make-bundle = (file, callback)->
         options = 
             basedir: basedir
