@@ -60,9 +60,6 @@
     console.log("Current Directory " + basedir);
     return makeBundle(target + ".js", function(err, bundle){
       var print;
-      if (err != null) {
-        return console.error(err);
-      }
       save(bundle + ".js", bundle);
       if (commander.html == null) {
         return;
