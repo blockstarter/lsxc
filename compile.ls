@@ -37,7 +37,7 @@ module.exports = (commander)->
         string = ""
         data <-! bundle.on \data
         bundle.on \error, (error)->
-             console.error error
+             #console.error error
         string += data.to-string!
         _ <-! bundle.on \end
         callback null, string

@@ -43,9 +43,7 @@
       bundle = b.bundle();
       string = "";
       return bundle.on('data', function(data){
-        bundle.on('error', function(error){
-          return console.error(error);
-        });
+        bundle.on('error', function(error){});
         string += data.toString();
         bundle.on('end', function(_){
           callback(null, string);
