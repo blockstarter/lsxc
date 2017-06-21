@@ -7,13 +7,25 @@ require! {
     \xtend
     \commander
     \node-sass : \sassc
+    \node-watch : \watch
 }
 
 save = (file, content)->
     console.log "Save #{file}"
     fs.write-file-sync(file, content)
 
-module.exports = (commander)->
+setup-watch = (commander)->
+    return if setup-watch.$
+    setup-watch.$ = yes
+    watch do 
+        * \./
+        * recursive: true,
+          filter: (name)->
+             !/node_modules/.test(name) and !/\.git/.test(name)
+        * ->
+             compile commander
+
+compile = (commander)->
     basedir = process.cwd!
     console.log "Current Directory " + basedir
     file = commander.compile
@@ -60,22 +72,26 @@ module.exports = (commander)->
         _ <-! bundle.on \end
         callback null, string
     
-    return if not commander.bundle?
-    err, bundlec <-! make-bundle "#{target}.js"
-    return console.error err if err?
-    save("#{bundle}.js", bundlec)
-    
-    
-    return if not commander.html?
-    print = '''
-    <!DOCTYPE html>
-    <html lang="en-us">
-      <head>
-       <meta charset="utf-8">
-       <title>Hello...</title>
-       <link rel="stylesheet" type="text/css" href="./style.css">
-      </head>
-      <script type="text/javascript" src="./bundle.js"></script>
-    </html>
-    '''
-    save "#{html}.html", print
+    if commander.bundle?
+        err, bundlec <-! make-bundle "#{target}.js"
+        if not err?
+           save("#{bundle}.js", bundlec)
+        else
+           console.error err
+    if commander.html?
+        print = '''
+        <!DOCTYPE html>
+        <html lang="en-us">
+          <head>
+           <meta charset="utf-8">
+           <title>Hello...</title>
+           <link rel="stylesheet" type="text/css" href="./style.css">
+          </head>
+          <script type="text/javascript" src="./bundle.js"></script>
+        </html>
+        '''
+        save "#{html}.html", print
+    if commander.watch
+       setup-watch commander
+
+module.exports = compile
