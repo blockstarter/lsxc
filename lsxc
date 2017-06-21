@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var commander = require('commander');
 var compile = require('./compile.js');
-var require('colors');
+require('colors');
 
 opt = ' Optional'.yellow;
 commander
