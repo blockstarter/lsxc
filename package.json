@@ -1,42 +1,42 @@
 {
-  "devDependencies": {},
+  "uperversion": "0.0",
+  "subversion": 218,
+  "version": "0.0.218",
+  "description": "Compile Livescript + Pug + React",
+  "main": "compile.js",
+  "bin": {
+    "lsxc": "./lsxc"
+  },
   "dependencies": {
-    "fix-indents": "^0.1.2092",
-    "commander": "^2.9.0",
-    "node-sass": "^4.5.3",
-    "livescript": "^1.5.0",
-    "reactify-ls": "^0.1.106",
+    "reactify-ls": "^0.1.107",
     "node-watch": "^0.5.4",
     "xtend": "^4.0.1",
     "through": "^2.3.8",
     "browserify": "^14.4.0",
-    "browserify-incremental": "^3.1.1"
+    "browserify-incremental": "^3.1.1",
+    "commander": "^2.9.0",
+    "fix-indents": "^0.1.2092",
+    "livescript": "^1.5.0",
+    "node-sass": "^4.5.3"
   },
-  "bin": {
-    "lsxc": "./lsxc"
+  "devDependencies": {},
+  "name": "lsxc",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "main": "compile.js",
-  "description": "Compile Livescript + Pug + React",
-  "version": "0.0.217",
-  "subversion": 217,
-  "uperversion": "0.0",
-  "homepage": "https://github.com/askucher/lsxc#readme",
-  "bugs": {
-    "url": "https://github.com/askucher/lsxc/issues"
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/askucher/lsxc.git"
   },
-  "license": "ISC",
-  "author": "flyber",
   "keywords": [
     "react",
     "livescript",
     "pug"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/askucher/lsxc.git"
+  "author": "flyber",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/askucher/lsxc/issues"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "name": "lsxc"
+  "homepage": "https://github.com/askucher/lsxc#readme"
 }
