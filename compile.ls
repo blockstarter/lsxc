@@ -9,26 +9,21 @@ require! {
     \node-sass : \sassc
     \node-watch : \watch
     \fix-indents
-    \chalk : { red, yellow, gray }
+    \chalk : { red, yellow, gray, green }
 }
 
 basedir = process.cwd!
 
-sass-cache = do 
-    path = \./file.sass.cache
-    save: (obj)->
-       fs.write-file-sync(path, JSON.stringify(obj))
-    load: ->
-       return {} if not fs.exists-sync(path)
-       JSON.parse fs.read-file-sync(path).to-string(\utf8)
 
-sass-c = sass-cache.load!
 
-title = (text)->
-  text = "✓ #{yellow text}"
-  max = 20 - text.length
+base-title = (colored, symbol, text)-->
+  text = "[#{colored symbol}] #{colored text}"
+  max = 40 - text.length
   if max <= 0 then text
   else text + [0 to max].map(-> " ").join('')
+
+title = base-title green, "✓"
+error = base-title red, "x"
 
 save = (file, content)->
     console.log "#{title 'save'} #{file}"
@@ -61,23 +56,32 @@ compile-file = (input, data)->
        else 
          lines[index] = gray lines[index]
     console.error ([] ++ lines).join(\\n)
-  target = input.replace(/\.ls/,\.js)
-  save target, state.js
+  #target = input.replace(/\[^\/]+.ls/,\.js)
+  #save target, state.js
   { code.ls, code.sass, state.js, state.err}
 compile = (commander)->
     console.log "----------------------"
     file = commander.compile
+    sass-cache = do
+      path = "./.#{file}.sass.cache"
+      save: (obj)->
+         fs.write-file-sync(path, JSON.stringify(obj))
+      load: ->
+         return {} if not fs.exists-sync(path)
+         JSON.parse fs.read-file-sync(path).to-string(\utf8)
+    sass-c = sass-cache.load!
     filename = file.replace(/\.ls/,'')
     return console.error('File is required') if not file?
     bundle = if commander.bundle is yes then \bundle else commander.bundle
-    bundle-js =  "#{filename}-#{bundle}.js"
-    bundle-css = "#{filename}-#{bundle}.css"
+    bundle-js =  ".#{filename}-#{bundle}.js"
+    bundle-css = ".#{filename}-#{bundle}.css"
     html = if commander.html is yes then \index else commander.html
-    bundle-html = "#{filename}-#{html}.html"
+    bundle-html = ".#{filename}-#{html}.html"
     sass = if commander.sass is yes then \style else commander.sass
     compilesass = if commander.compilesass is yes then \style else commander.compilesass
     sass-c[commander.compile] = sass-c[commander.compile] ? {}
     make-bundle = (file, callback)->
+        console.log "#{title 'make bundle'} #file"
         options = 
             basedir: basedir
             paths: ["#{basedir}/node_modules"]
@@ -86,37 +90,42 @@ compile = (commander)->
             entries: [file]
         b = browserify xtend(browserify-inc.args, options)
         b.transform (file) ->
+          filename = file.match(/([a-z-0-9]+)\.ls$/).1
+          console.log "#{title 'process'} #{file}"
           data = ''
           write = (buf) -> data += buf
           end = ->
             code =
                 compile-file file, data
             if sass?
-              save "#{filename}.sass", code.sass
+              save ".#{filename}.sass", code.sass
             if commander.fixindents
               indented = fix-indents data
               if data isnt indented
                  console.log "#{title 'fix indents'} #file"
                  save file, indented
             if compilesass?
-              console.log "#{title 'compile'} #{filename}.sass"
-              sass-conf =
-                  data: code.sass
-                  indented-syntax: yes
-              try
-                sass-c[commander.compile][file] = sassc.render-sync(sass-conf).css.to-string(\utf8)
-              catch err
-                console.error "compile SASS #{red 'error'}: #{err.message}"
+              console.log "#{title 'compile'} .#{filename}.sass"
+              if code.sass.length > 0
+                sass-conf =
+                    data: code.sass
+                    indented-syntax: yes
+                try
+                  sass-c[commander.compile][file] = sassc.render-sync(sass-conf).css.to-string(\utf8)
+                catch err
+                  console.error "#{error 'err compile sass'}  #{yellow err.message}"
+              else 
+                sass-c[commander.compile][file] = ""
             @queue code.js
             @queue null
           through write, end
-        browserify-inc b, { cache-file: file + \.cache }
+        browserify-inc b, { cache-file:  ".#{file}.cache" }
         bundle = b.bundle!
         string = ""
         bundle.on \data, (data)->
           string += data.to-string!
         bundle.on \error, (error)->
-          console.error "bundle #{red 'error'} #{error.message}"
+          console.error "#{ error 'bundle error'} #{error.message}"
         _ <-! bundle.on \end
         compiled-sass = sass-c[commander.compile]
         result =
