@@ -1,11 +1,11 @@
 require! {
-    \fs 
+    \fs
+    \glob
     \reactify-ls : \reactify
     \browserify-incremental : \browserifyInc
     \livescript
     \browserify
     \xtend
-    \commander
     \node-sass : \sassc
     \node-watch : \watch
 }
@@ -16,7 +16,7 @@ save = (file, content)->
     fs.write-file-sync(file, content)
 
 setup-watch = (commander)->
-    watch do
+    watcher = watch do
         * basedir
         * recursive: yes
           filter: (name)->
@@ -26,7 +26,6 @@ setup-watch = (commander)->
              compile commander
 
 compile = (commander)->
-    
     console.log "Current Directory " + basedir
     file = commander.compile
     return console.error('File is required') if not file?
