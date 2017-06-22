@@ -9,27 +9,24 @@ require! {
     \node-sass : \sassc
     \node-watch : \watch
 }
+basedir = process.cwd!
 
 save = (file, content)->
     console.log "Save #{file}"
     fs.write-file-sync(file, content)
 
 setup-watch = (commander)->
-    setup-watch.enabled = yes
-    return if setup-watch.$
-    setup-watch.$ = yes
-    watch do 
-        * \./
-        * recursive: true,
+    watch do
+        * basedir
+        * recursive: yes
           filter: (name)->
-             !/node_modules/.test(name) and !/\.git/.test(name)
+             !/(node_modules|\.git)/.test(name) and /\.ls/.test(name)
         * ->
-             return if setup-watch.enabled is no
+             watcher.close!
              compile commander
 
 compile = (commander)->
-    setup-watch.enabled = no
-    basedir = process.cwd!
+    
     console.log "Current Directory " + basedir
     file = commander.compile
     return console.error('File is required') if not file?
