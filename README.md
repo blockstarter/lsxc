@@ -19,7 +19,7 @@ require! {
   \react
 }
 
-.btn.sass
+.btn
   color: red
   padding-left: 5px
   &:hover
