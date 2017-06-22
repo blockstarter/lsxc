@@ -2,11 +2,13 @@
 var commander = require('commander');
 var compile = require('./compile.js');
 
-opt = ' Optional';
+var opt = ' Optional';
+var pack = require('./package.json');
 commander
-  .version('0.0.1')
+  .version(pack.version)
   .option('-c, --compile [filename]', 'Main File. Without extension')
   .option('-s, --sass [filename]', 'Result File (style.sass).' + opt)
+  .option('-f, --fixindents', 'Fix indents in source files' + opt)
   .option('-k, --compilesass [filename]', 'Result File (style.css).' + opt)
   .option('-w, --watch', 'Watch changes in folder and recompile (Under contruction).' + opt)
   .option('-b, --bundle [filename]', 'Generate bundle.js' + opt)

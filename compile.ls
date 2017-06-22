@@ -8,7 +8,10 @@ require! {
     \xtend
     \node-sass : \sassc
     \node-watch : \watch
+    \fix-indents
 }
+
+
 
 basedir = process.cwd!
 #dir = "#{basedir}/.compiled"
@@ -75,6 +78,9 @@ compile = (commander)->
                 compile-file file, data
             if sass?
               save "#{filename}.sass", code.sass
+            if commander.fixindents
+              indented = fix-indents data
+              save file, indented
             if compilesass?
               console.log "compile #{filename}.sass"
               sass-conf =
