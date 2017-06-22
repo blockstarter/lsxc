@@ -11,7 +11,7 @@ npm i lsxc -g
 
 #### Code (file.ls)
 
-```
+```Livescript
 require! {
   \mobx-react : { observer }
   \mobx : { observable }
