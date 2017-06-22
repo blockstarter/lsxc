@@ -74,6 +74,7 @@
         };
         end = function(){
           var code;
+          console.log('tr', file, data);
           code = compileFile(file, data);
           styles.push(code.sass);
           this.queue(code.ls);

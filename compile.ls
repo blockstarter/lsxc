@@ -52,6 +52,7 @@ compile = (commander)->
           data = ''
           write = (buf) -> data += buf
           end = ->
+            console.log \tr, file, data
             code =
                 compile-file file, data
             styles.push code.sass
