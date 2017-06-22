@@ -19,7 +19,7 @@ require! {
   \react
 }
 
-btn:sass =
+.btn.sass
   color: red
   padding-left: 5px
   &:hover
@@ -69,7 +69,7 @@ lsxc -skhbc file.ls
 
 ```
 
-#### Help 
+#### Help
 
 ```
 lsxc --help
