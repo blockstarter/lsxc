@@ -1,6 +1,6 @@
 require! {
     \fs
-    \glob
+    \through
     \reactify-ls : \reactify
     \browserify-incremental : \browserifyInc
     \livescript
