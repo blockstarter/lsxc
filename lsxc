@@ -9,7 +9,6 @@ commander
   .option('-s, --sass [filename]', 'Result File (style.sass).' + opt)
   .option('-k, --compilesass [filename]', 'Result File (style.css).' + opt)
   .option('-w, --watch', 'Watch changes in folder and recompile (Under contruction).' + opt)
-  .option('-t, --target [filename]', 'Result File (result.js).' + opt)
   .option('-b, --bundle [filename]', 'Generate bundle.js' + opt)
   .option('-h, --html', 'Generate HTML included bundle.js for demo.' + opt)
   .parse(process.argv);

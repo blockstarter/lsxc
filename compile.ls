@@ -24,36 +24,23 @@ setup-watch = (commander)->
         * ->
              watcher.close!
              compile commander
-
+compile-file = (input, data)->
+  console.log "Compile " + input
+  code = reactify data
+  js = livescript.compile code.ls
+  target = input.replace(/\.ls/,\.js)
+  save target, js
+  code
 compile = (commander)->
-    console.log "Current Directory " + basedir
+    console.log "----------------------"
     file = commander.compile
     return console.error('File is required') if not file?
-    target = commander.target ? file
     bundle = if commander.bundle is yes then \bundle else commander.bundle
     html = if commander.html is yes then \index else commander.html
     sass = if commander.sass is yes then \style else commander.sass
     compilesass = if commander.compilesass is yes then \style else commander.compilesass
-    input = "#{file}.ls"
-    console.log "Compile " + input
-    code = reactify fs.read-file-sync(input).to-string(\utf-8)
-    js = livescript.compile code.ls
-    save "#{target}.js", js
-    if sass?
-       save "#{sass}.sass", code.sass
-    if compilesass?
-       console.log "Compile SASS"
-       state =
-          css: ""
-       try 
-           state.css = sassc.render-sync do
-               data: code.sass
-               indented-syntax: yes
-           save "#{compilesass}.css", state.css.css
-       catch err
-           console.error "Compile SASS Error #{err.message ? err}"
-    
     make-bundle = (file, callback)->
+        styles = []
         options = 
             basedir: basedir
             paths: ["#{basedir}/node_modules"]
@@ -61,7 +48,17 @@ compile = (commander)->
             commondir: no
             entries: [file]
         b = browserify xtend(browserify-inc.args, options)
-        browserify-inc b, {cacheFile: file + ".cache"}
+        b.transform (file) ->
+          data = ''
+          write = (buf) -> data += buf
+          end = ->
+            code =
+                compile-file file, data
+            styles.push code.sass
+            @queue code.ls
+            @queue null
+          through write, end
+        browserify-inc b, {cache-file: file + ".cache"}
         bundle = b.bundle!
         string = ""
         bundle.on \data, (data)->
@@ -69,14 +66,29 @@ compile = (commander)->
         bundle.on \error, (error)->
              #console.error error
         _ <-! bundle.on \end
-        callback null, string
-    
+        result =
+          sass: styles.join(\\n)
+          bundle: string
+        callback null, result
     if commander.bundle?
-        err, bundlec <-! make-bundle "#{target}.js"
-        if not err?
-           save("#{bundle}.js", bundlec)
-        else
-           console.error err
+        err, bundlec <-! make-bundle file
+        return console.error err if err?
+        save "#{bundle}.js", bundlec.bundle
+        if sass?
+          save "#{sass}.sass", bundlec.sass
+          if compilesass?
+            console.log "Compile SASS"
+            state =
+              css: ""
+            try 
+               state.css = 
+                 sassc.render-sync do
+                   data: bundlec.sass
+                   indented-syntax: yes
+               save "#{compilesass}.css", state.css.css
+            catch err
+               console.error "Compile SASS Error #{err.message ? err}"
+          
     if commander.html?
         print = '''
         <!DOCTYPE html>
