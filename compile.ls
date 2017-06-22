@@ -9,14 +9,10 @@ require! {
     \node-sass : \sassc
     \node-watch : \watch
     \fix-indents
+    \chalk : { red, yellow, gray }
 }
 
-
-
 basedir = process.cwd!
-#dir = "#{basedir}/.compiled"
-#fs.mkdir-sync(dir) if not fs.exists-sync(dir)
-
 
 sass-cache = do 
     path = \./file.sass.cache
@@ -28,8 +24,14 @@ sass-cache = do
 
 sass-c = sass-cache.load!
 
+title = (text)->
+  text = "✓ #{yellow text}"
+  max = 20 - text.length
+  if max <= 0 then text
+  else text + [0 to max].map(-> " ").join('')
+
 save = (file, content)->
-    console.log "save #{file}"
+    console.log "#{title 'save'} #{file}"
     fs.write-file-sync(file , content)
 
 setup-watch = (commander)->
@@ -42,12 +44,26 @@ setup-watch = (commander)->
              watcher.close!
              compile commander
 compile-file = (input, data)->
-  console.log "compile " + input
+  console.log "#{title 'compile'} #{input}" 
   code = reactify data
-  js = livescript.compile code.ls
+  state =
+    js: null
+  try 
+    state.js = livescript.compile code.ls
+  catch err 
+    state.err = err.message
+    errorline = err.message.match(/line ([0-9]+)/).1 ? 0
+    
+    lines = code.ls.split(\\n)
+    for index of lines 
+       if index is errorline
+         lines[index] = lines[index] + "       <<< #{red err.message}"
+       else 
+         lines[index] = gray lines[index]
+    console.error ([] ++ lines).join(\\n)
   target = input.replace(/\.ls/,\.js)
-  save target, js
-  code
+  save target, state.js
+  { code.ls, code.sass, state.js, state.err}
 compile = (commander)->
     console.log "----------------------"
     file = commander.compile
@@ -62,7 +78,6 @@ compile = (commander)->
     compilesass = if commander.compilesass is yes then \style else commander.compilesass
     sass-c[commander.compile] = sass-c[commander.compile] ? {}
     make-bundle = (file, callback)->
-        
         options = 
             basedir: basedir
             paths: ["#{basedir}/node_modules"]
@@ -80,17 +95,19 @@ compile = (commander)->
               save "#{filename}.sass", code.sass
             if commander.fixindents
               indented = fix-indents data
-              save file, indented
+              if data isnt indented
+                 console.log "#{title 'fix indents'} #file"
+                 save file, indented
             if compilesass?
-              console.log "compile #{filename}.sass"
+              console.log "#{title 'compile'} #{filename}.sass"
               sass-conf =
                   data: code.sass
                   indented-syntax: yes
               try
                 sass-c[commander.compile][file] = sassc.render-sync(sass-conf).css.to-string(\utf8)
               catch err
-                console.error "compile SASS error: #{err.message}"
-            @queue livescript.compile code.ls
+                console.error "compile SASS #{red 'error'}: #{err.message}"
+            @queue code.js
             @queue null
           through write, end
         browserify-inc b, { cache-file: file + \.cache }
@@ -99,7 +116,7 @@ compile = (commander)->
         bundle.on \data, (data)->
           string += data.to-string!
         bundle.on \error, (error)->
-          console.error error.message
+          console.error "bundle #{red 'error'} #{error.message}"
         _ <-! bundle.on \end
         compiled-sass = sass-c[commander.compile]
         result =
@@ -126,6 +143,7 @@ compile = (commander)->
         """
         save bundle-html, print
     if commander.watch
+       console.log title "watcher started..."
        setup-watch commander
 
 module.exports = compile

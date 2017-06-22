@@ -1,7 +1,7 @@
 # lsxc 
 ### Compile Livescript + Pug + React into Javascript Bundle
 
-### Install 
+### Install
 
 ```
 npm i lsxc -g
