@@ -79,8 +79,9 @@ lsxc --help
 
 ### Run Programmatically
 
-#### Javascript 
-```
+#### Javascript
+
+```Javascript
 lsxc = require('lsxc');
 
 options = {
