@@ -3,7 +3,7 @@
 
 Store your style, logic and layout in one file. 
 
-![logo](http://res.cloudinary.com/nixar-work/image/upload/v1501255165/Screen_Shot_2017-07-28_at_6.29.03_PM.png)
+![logo](https://cdn-images-1.medium.com/max/1600/1*-cjXqHI7Svt-erj0iiBMng.png)
 
 ### Install
 
