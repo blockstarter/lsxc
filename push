@@ -4,6 +4,6 @@ jq .version=.uperversion+\".\"+\(.subversion\|tostring\) output.json > package.j
 rm output.json
 git add -u
 git add .
-git commit -m "#1"
-git push origin master --force
+git commit -m $1
+git push origin master
 npm publish

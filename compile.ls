@@ -10,11 +10,13 @@ require! {
     \node-watch : \watch
     \fix-indents
     \chalk : { red, yellow, gray, green }
+    \express
+    \vm
 }
 
+
 basedir = process.cwd!
-
-
+compileddir = "#{basedir}/.compiled"
 
 base-title = (colored, symbol, text)-->
   text = "[#{colored symbol}] #{colored text}"
@@ -24,20 +26,50 @@ base-title = (colored, symbol, text)-->
 
 title = base-title green, "✓"
 error = base-title red, "x"
+warn  = base-title yellow, "!"
+
+
+
+
+fs.mkdir(compileddir) if not fs.exists-sync(compileddir)
 
 save = (file, content)->
+    save-origin "#{compileddir}/#{file}" , content
+save-origin = (file, content)->
     console.log "#{title 'save'} #{file}"
-    fs.write-file-sync(file , content)
+    fs.write-file-sync file , content
 
 setup-watch = (commander)->
+    return if setup-watch.init
+    console.log warn "watcher started..."
+    setup-watch.init = yes
     watcher = watch do
         * basedir
         * recursive: yes
           filter: (name)->
              !/(node_modules|\.git)/.test(name) and /\.ls/.test(name)
-        * ->
-             watcher.close!
-             compile commander
+        * (evt, name)->
+             return if setup-watch.disabled
+             console.log "#{warn 'changed'} #name"
+             setup-watch.disabled = yes
+             #watcher.close!
+             err <-! compile commander
+             <-! set-timeout _, 500
+             setup-watch.disabled = no
+server-start = (commander)->
+  return if server-start.init
+  server-start.init = yes
+  app = express!
+  app.use(express.static(compileddir)) 
+  port =   if commander.nodestart is yes then 8080 else commander.nodestart
+  start = ->
+    app.listen port, ->
+      console.log("#{warn 'node started'} port #{port}")
+  script = new vm.Script("(#{start.to-string!})()" )
+  context = new vm.create-context( { port, app, console, warn } )
+  script.run-in-context context
+  port
+  
 compile-file = (input, data)->
   console.log "#{title 'compile'} #{input}" 
   code = reactify data
@@ -55,33 +87,38 @@ compile-file = (input, data)->
          lines[index] = lines[index] + "       <<< #{red err.message}"
        else 
          lines[index] = gray lines[index]
-    console.error ([] ++ lines).join(\\n)
+    console.log ([] ++ lines).join(\\n)
   #target = input.replace(/\[^\/]+.ls/,\.js)
   #save target, state.js
   { code.ls, code.sass, state.js, state.err}
-compile = (commander)->
+compile = (commander, cb)->
     console.log "----------------------"
+    cb2 = (err, data)->
+      if err?
+         console.log "#{red 'Error'} err"
+      cb? err, data
     file = commander.compile
     sass-cache = do
-      path = "./.#{file}.sass.cache"
+      path = "#{compileddir}/#{file}.sass.cache"
       save: (obj)->
          fs.write-file-sync(path, JSON.stringify(obj))
       load: ->
          return {} if not fs.exists-sync(path)
          JSON.parse fs.read-file-sync(path).to-string(\utf8)
     sass-c = sass-cache.load!
-    filename = file.replace(/\.ls/,'')
-    return console.error('File is required') if not file?
+    return if file.index-of('.ls') is -1
+    filename = file.replace /\.ls/,''
+    return cb2 'File is required' if not file?
     bundle = if commander.bundle is yes then \bundle else commander.bundle
-    bundle-js =  ".#{filename}-#{bundle}.js"
-    bundle-css = ".#{filename}-#{bundle}.css"
+    bundle-js =  "#{filename}-#{bundle}.js"
+    bundle-css = "#{filename}-#{bundle}.css"
     html = if commander.html is yes then \index else commander.html
-    bundle-html = ".#{filename}-#{html}.html"
+    bundle-html = "#{filename}-#{html}.html"
     sass = if commander.sass is yes then \style else commander.sass
     compilesass = if commander.compilesass is yes then \style else commander.compilesass
     sass-c[commander.compile] = sass-c[commander.compile] ? {}
     make-bundle = (file, callback)->
-        console.log "#{title 'make bundle'} #file"
+        console.log "#{title 'start main file'} #file"
         options = 
             basedir: basedir
             paths: ["#{basedir}/node_modules"]
@@ -90,22 +127,21 @@ compile = (commander)->
             entries: [file]
         b = browserify xtend(browserify-inc.args, options)
         b.transform (file) ->
-          filename = file.match(/([a-z-0-9]+)\.ls$/).1
-          console.log "#{title 'process'} #{file}"
+          filename = file.match(/([a-z-0-9_]+)\.ls$/).1
           data = ''
           write = (buf) -> data += buf
           end = ->
             code =
                 compile-file file, data
             if sass?
-              save ".#{filename}.sass", code.sass
+              save "#{filename}.sass", code.sass
             if commander.fixindents
               indented = fix-indents data
               if data isnt indented
                  console.log "#{title 'fix indents'} #file"
-                 save file, indented
+                 save-origin file, indented
             if compilesass?
-              console.log "#{title 'compile'} .#{filename}.sass"
+              console.log "#{title 'compile'} #{filename}.sass"
               if code.sass.length > 0
                 sass-conf =
                     data: code.sass
@@ -116,16 +152,17 @@ compile = (commander)->
                   console.error "#{error 'err compile sass'}  #{yellow err.message}"
               else 
                 sass-c[commander.compile][file] = ""
+            save "#{filename}.js", code.js
             @queue code.js
             @queue null
           through write, end
-        browserify-inc b, { cache-file:  ".#{file}.cache" }
+        browserify-inc b, { cache-file:  "#{compileddir}/#{file}.cache" }
         bundle = b.bundle!
         string = ""
         bundle.on \data, (data)->
           string += data.to-string!
-        bundle.on \error, (error)->
-          console.error "#{ error 'bundle error'} #{error.message}"
+        bundle.on \error, (err)->
+          console.log "#{ error 'bundle err' } #{err.message ? err}"
         _ <-! bundle.on \end
         compiled-sass = sass-c[commander.compile]
         result =
@@ -134,25 +171,33 @@ compile = (commander)->
         sass-cache.save sass-c
         callback null, result
     if commander.bundle?
-        err, bundlec <-! make-bundle file
-        save bundle-js, bundlec.js
-        if compilesass?
-          save bundle-css, bundlec.css
-    if commander.html?
-        print = """
-        <!DOCTYPE html>
-        <html lang="en-us">
-          <head>
-           <meta charset="utf-8">
-           <title>Hello...</title>
-           <link rel="stylesheet" type="text/css" href="./#{bundle-css}">
-          </head>
-          <script type="text/javascript" src="./#{bundle-js}"></script>
-        </html>
-        """
-        save bundle-html, print
-    if commander.watch
-       console.log title "watcher started..."
-       setup-watch commander
-
+      err, bundlec <-! make-bundle file
+      return cb2 err if err? 
+      if not commander.putinhtml?
+         save bundle-js, bundlec.js
+      if compilesass? and not commander.putinhtml?
+         save bundle-css, bundlec.css
+      
+      css-in =  | commander.putinhtml => """<style>#{bundlec.css}</style>"""
+                | _ => """ <link rel="stylesheet" type="text/css" href="./#{bundle-css}">  """
+      html-in = | commander.putinhtml => """<script>#{bundlec.js}</script>"""
+                | _ => """<script type="text/javascript" src="./#{bundle-js}"></script>"""
+      if commander.html?
+          print = """
+          <!DOCTYPE html>
+          <html lang="en-us">
+            <head>
+             <meta charset="utf-8">
+             <title>#{filename}</title>
+             #{css-in}
+            </head>
+            #{html-in}
+          </html>
+          """
+          save bundle-html, print
+      if commander.nodestart?
+         server-start commander
+      if commander.watch
+         setup-watch commander
+      cb2 null, "success"
 module.exports = compile

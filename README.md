@@ -5,6 +5,9 @@
 
 ```
 npm i lsxc -g
+
+#for demo
+npm i react react-dom mobx mobx-react --save 
 ```
 
 ### Example 
@@ -59,7 +62,7 @@ window.onload = ->
         ...
   render do
     Main.pug(store=store)
-    document.body.append-child document.create-element \app
+    document.document-element
 ```
 
 #### Compile 

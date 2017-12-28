@@ -1,25 +1,26 @@
 {
   "uperversion": "0.0",
-  "subversion": 222,
-  "version": "0.0.222",
+  "subversion": 252,
+  "version": "0.0.252",
   "description": "Compile Livescript + Pug + React",
   "main": "compile.js",
   "bin": {
     "lsxc": "./lsxc"
   },
   "dependencies": {
-    "reactify": "^1.1.1",
-    "reactify-ls": "^0.1.109",
-    "through": "^2.3.8",
-    "xtend": "^4.0.1",
-    "commander": "^2.9.0",
-    "chalk": "^1.1.3",
-    "browserify-incremental": "^3.1.1",
-    "browserify": "^14.4.0",
-    "node-watch": "^0.5.4",
     "node-sass": "^4.5.3",
     "livescript": "^1.5.0",
-    "fix-indents": "^0.1.2092"
+    "fix-indents": "^0.1.2092",
+    "commander": "^2.9.0",
+    "express": "^4.15.3",
+    "xtend": "^4.0.1",
+    "through": "^2.3.8",
+    "reactify-ls": "^0.1.127",
+    "node-watch": "^0.5.4",
+    "reactify": "^1.1.1",
+    "browserify": "^14.4.0",
+    "browserify-incremental": "^3.1.1",
+    "chalk": "^1.1.3"
   },
   "devDependencies": {},
   "name": "lsxc",
