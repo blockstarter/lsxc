@@ -1,5 +1,9 @@
 # lsxc 
-### Compile Livescript + Pug + React into Javascript Bundle
+### Compile Livescript + Pug + SASS + React into Javascript/Css Bundle
+
+Store your style, logic and layout in one file. 
+
+![logo](https://cdn-images-1.medium.com/max/1600/1*-cjXqHI7Svt-erj0iiBMng.png)
 
 ### Install
 
