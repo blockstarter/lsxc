@@ -57,7 +57,7 @@
     return watcher = watch(basedir, {
       recursive: true,
       filter: function(name){
-        return !/(node_modules|\.git)/.test(name) && /\.ls/.test(name);
+        return !/(node_modules|\.git)/.test(name) && /\.(ls|json|js)/.test(name);
       }
     }, function(evt, name){
       if (setupWatch.disabled) {
@@ -150,9 +150,6 @@
       }
     });
     sassC = sassCache.load();
-    if (file.indexOf('.ls') === -1) {
-      return;
-    }
     filename = file.replace(/\.ls/, '');
     if (file == null) {
       return cb2('File is required');
@@ -187,14 +184,27 @@
       };
       b = browserify(xtend(browserifyInc.args, options));
       b.transform(function(file){
-        var filename, data, write, end;
-        filename = file.match(/([a-z-0-9_]+)\.ls$/)[1];
+        var json, ref$, js, ref1$, filename, ref2$, data, write, end;
+        json = (ref$ = file.match(/([a-z-0-9_]+)\.json$/)) != null ? ref$[1] : void 8;
+        js = (ref1$ = file.match(/([a-z-0-9_]+)\.js$/)) != null ? ref1$[1] : void 8;
+        filename = (ref2$ = file.match(/([a-z-0-9_]+)\.ls$/)) != null ? ref2$[1] : void 8;
         data = '';
         write = function(buf){
           return data += buf;
         };
         end = function(){
-          var code, indented, sassConf, err;
+          var t, send, code, indented, sassConf, err;
+          t = this;
+          send = function(data){
+            t.queue(data);
+            return t.queue(null);
+          };
+          if (json != null) {
+            return send(data);
+          }
+          if (js != null) {
+            return send(data);
+          }
           code = compileFile(file, data);
           if (sass != null) {
             save(filename + ".sass", code.sass);
@@ -224,8 +234,7 @@
             }
           }
           save(filename + ".js", code.js);
-          this.queue(code.js);
-          return this.queue(null);
+          return send(code.js);
         };
         return through(write, end);
       });

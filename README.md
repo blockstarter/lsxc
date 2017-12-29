@@ -1,9 +1,17 @@
 # lsxc 
 ### Compile Livescript + Pug + SASS + React into Javascript/Css Bundle
 
+```
+We are hiring - please contact a.stegno@gmail.com 
+```
+
 Store your style, logic and layout in one file. 
 
 ![logo](https://cdn-images-1.medium.com/max/1600/1*-cjXqHI7Svt-erj0iiBMng.png)
+
+### Demo 
+
+[![Demo](https://img.youtube.com/vi/Z5NuIIHBsqg/0.jpg)](https://youtu.be/Z5NuIIHBsqg)
 
 ### Install
 

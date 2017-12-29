@@ -47,7 +47,7 @@ setup-watch = (commander)->
         * basedir
         * recursive: yes
           filter: (name)->
-             !/(node_modules|\.git)/.test(name) and /\.ls/.test(name)
+             !/(node_modules|\.git)/.test(name) and /\.(ls|json|js)/.test(name)
         * (evt, name)->
              return if setup-watch.disabled
              console.log "#{warn 'changed'} #name"
@@ -106,7 +106,7 @@ compile = (commander, cb)->
          return {} if not fs.exists-sync(path)
          JSON.parse fs.read-file-sync(path).to-string(\utf8)
     sass-c = sass-cache.load!
-    return if file.index-of('.ls') is -1
+    #return if file.index-of('.ls') is -1
     filename = file.replace /\.ls/,''
     return cb2 'File is required' if not file?
     bundle = if commander.bundle is yes then \bundle else commander.bundle
@@ -127,10 +127,20 @@ compile = (commander, cb)->
             entries: [file]
         b = browserify xtend(browserify-inc.args, options)
         b.transform (file) ->
-          filename = file.match(/([a-z-0-9_]+)\.ls$/).1
+          json = file.match(/([a-z-0-9_]+)\.json$/)?1
+          js = file.match(/([a-z-0-9_]+)\.js$/)?1
+          filename = file.match(/([a-z-0-9_]+)\.ls$/)?1
           data = ''
           write = (buf) -> data += buf
+          
+            
           end = ->
+            t = @
+            send = (data)->
+                t.queue data 
+                t.queue null
+            return send data if json?
+            return send data if js?
             code =
                 compile-file file, data
             if sass?
@@ -153,8 +163,7 @@ compile = (commander, cb)->
               else 
                 sass-c[commander.compile][file] = ""
             save "#{filename}.js", code.js
-            @queue code.js
-            @queue null
+            send code.js
           through write, end
         browserify-inc b, { cache-file:  "#{compileddir}/#{file}.cache" }
         bundle = b.bundle!
