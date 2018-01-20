@@ -12,6 +12,7 @@ require! {
     \chalk : { red, yellow, gray, green }
     \express
     \vm
+    \javascrypt : { encrypt }
 }
 
 
@@ -47,7 +48,7 @@ setup-watch = (commander)->
         * basedir
         * recursive: yes
           filter: (name)->
-             !/(node_modules|\.git)/.test(name) and /\.(ls|json|js)/.test(name)
+             !/(node_modules|\.git)/.test(name)
         * (evt, name)->
              return if setup-watch.disabled
              console.log "#{warn 'changed'} #name"
@@ -127,20 +128,18 @@ compile = (commander, cb)->
             entries: [file]
         b = browserify xtend(browserify-inc.args, options)
         b.transform (file) ->
-          json = file.match(/([a-z-0-9_]+)\.json$/)?1
-          js = file.match(/([a-z-0-9_]+)\.js$/)?1
+          #json = file.match(/([a-z-0-9_]+)\.json$/)?1
+          #js = file.match(/([a-z-0-9_]+)\.js$/)?1
           filename = file.match(/([a-z-0-9_]+)\.ls$/)?1
           data = ''
           write = (buf) -> data += buf
           
-            
           end = ->
             t = @
             send = (data)->
-                t.queue data 
+                t.queue data
                 t.queue null
-            return send data if json?
-            return send data if js?
+            return send data if not filename?
             code =
                 compile-file file, data
             if sass?
@@ -162,6 +161,8 @@ compile = (commander, cb)->
                   console.error "#{error 'err compile sass'}  #{yellow err.message}"
               else 
                 sass-c[commander.compile][file] = ""
+            if commander.javascrypt
+                code.js = encrypt code.js
             save "#{filename}.js", code.js
             send code.js
           through write, end

@@ -17,6 +17,7 @@ commander
   .option('-s, --sass [filename]', 'Result File (style.sass).' + opt)
   .option('-n, --nodestart [port]', 'Start nodejs to serve generated html files.' + opt)
   .option('-f, --fixindents', 'Fix indents in source files' + opt)
+  .option('-j, --javascrypt', 'Encrypt resulted javascript' + opt)
   .option('-k, --compilesass [filename]', 'Result File (style.css).' + opt)
   .option('-w, --watch', 'Watch changes in folder and recompile.' + opt)
   .option('-l, --livereload', 'Starts webserver and refreshes page when file changed (Not Implemented).' + opt)
