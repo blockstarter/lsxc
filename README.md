@@ -1,4 +1,4 @@
-# lsxc 
+# LSXc - LSX Compiler
 ### Compile Livescript + Pug + SASS + React into Javascript/Css Bundle
 
 
