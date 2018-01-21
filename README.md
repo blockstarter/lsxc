@@ -5,7 +5,7 @@
 
 Store your style, logic and layout in one file. 
 
-![logo](http://res.cloudinary.com/nixar-work/image/upload/v1516571752/lsx-logo.png)
+![logo](http://res.cloudinary.com/nixar-work/image/upload/v1516572232/lsx-logo.jpg)
 
 ### Demo 
 
