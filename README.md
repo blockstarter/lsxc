@@ -1,8 +1,10 @@
 ![logo](http://res.cloudinary.com/nixar-work/image/upload/v1516572404/lsx-logo.jpg)
 
-* Compile Livescript + Pug + SASS + React into Javascript/Css Bundle
-* Store your style, logic and layout in one file
+* Compile Livescript + Pug + SASS + React into Javascript and Css Bundles
+* Store your style, logic and layout in one file (Component Style)
 * Use benefits of indented languages
+* Build React DOM in functional style
+* Use fast compiler
 
 ### Demo 
 
