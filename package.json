@@ -16,7 +16,7 @@
     "fix-indents": "^0.1.2092",
     "javascrypt": "0.0.6",
     "livescript": "^1.5.0",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.7.2",
     "node-watch": "^0.5.4",
     "reactify": "^1.1.1",
     "reactify-ls": "^0.1.128",
