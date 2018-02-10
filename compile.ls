@@ -92,6 +92,10 @@ compile-file = (input, data)->
   #target = input.replace(/\[^\/]+.ls/,\.js)
   #save target, state.js
   { code.ls, code.sass, state.js, state.err}
+apply-variables = (text, variables)->
+    apply-variable = (text, name)->
+        text.replace "<#{name}/>", variables[name]
+    Object.keys(variables).reduce(apply-variable, text) 
 compile = (commander, cb)->
     console.log "----------------------"
     cb2 = (err, data)->
@@ -193,7 +197,7 @@ compile = (commander, cb)->
       dynamicHTML = | commander.putinhtml => """<script>#{bundlec.js}</script>"""
                     | _ => """<script type="text/javascript" src="./#{bundle-js}"></script>"""
       if commander.html?
-          default-template = """
+          default-template = '''
           <!DOCTYPE html>
           <html lang="en-us">
             <head>
@@ -203,14 +207,10 @@ compile = (commander, cb)->
             </head>
             <dynamicHTML/>
           </html>
-          """
+          '''
           current-template = 
             | commander.template? => fs.read-file-sync commander.template, \utf8
             | _ => default-template
-          apply-variables = (text, variables)->
-              apply-variable = (text, name)->
-                  text.replace "<#{name}/>", variables[name]
-              Object.keys(variables).reduce(apply-variable, text) 
           html = apply-variables current-template, { dynamicCSS, dynamicHTML }
           save bundle-html, html
       if commander.nodestart?
