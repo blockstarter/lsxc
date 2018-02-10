@@ -188,9 +188,9 @@ compile = (commander, cb)->
       if compilesass? and not commander.putinhtml?
          save bundle-css, bundlec.css
       
-      inline-css =  | commander.putinhtml => """<style>#{bundlec.css}</style>"""
+      dynamicCSS =  | commander.putinhtml => """<style>#{bundlec.css}</style>"""
                     | _ => """ <link rel="stylesheet" type="text/css" href="./#{bundle-css}">  """
-      inline-html = | commander.putinhtml => """<script>#{bundlec.js}</script>"""
+      dynamicHTML = | commander.putinhtml => """<script>#{bundlec.js}</script>"""
                     | _ => """<script type="text/javascript" src="./#{bundle-js}"></script>"""
       if commander.html?
           default-template = """
@@ -199,9 +199,9 @@ compile = (commander, cb)->
             <head>
              <meta charset="utf-8">
              <title>loading...</title>
-             {{inlineCss}}
+             <dynamicCSS/>
             </head>
-            {{inlineHtml}}
+            <dynamicHTML/>
           </html>
           """
           current-template = 
@@ -209,9 +209,9 @@ compile = (commander, cb)->
             | _ => default-template
           apply-variables = (text, variables)->
               apply-variable = (text, name)->
-                  text.replace "{{#{name}}}", variables[name]
+                  text.replace "<#{name}/>", variables[name]
               Object.keys(variables).reduce(apply-variable, text) 
-          html = apply-variables current-template, { inline-css, inline-html }
+          html = apply-variables current-template, { dynamicCSS, dynamicHTML }
           save bundle-html, html
       if commander.nodestart?
          server-start commander

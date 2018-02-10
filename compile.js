@@ -264,7 +264,7 @@
     };
     if (commander.bundle != null) {
       return makeBundle(file, function(err, bundlec){
-        var inlineCss, inlineHtml, defaultTemplate, currentTemplate, applyVariables, html;
+        var dynamicCSS, dynamicHTML, defaultTemplate, currentTemplate, applyVariables, html;
         if (err != null) {
           return cb2(err);
         }
@@ -274,7 +274,7 @@
         if (compilesass != null && commander.putinhtml == null) {
           save(bundleCss, bundlec.css);
         }
-        inlineCss = (function(){
+        dynamicCSS = (function(){
           switch (false) {
           case !commander.putinhtml:
             return "<style>" + bundlec.css + "</style>";
@@ -282,7 +282,7 @@
             return " <link rel=\"stylesheet\" type=\"text/css\" href=\"./" + bundleCss + "\">  ";
           }
         }());
-        inlineHtml = (function(){
+        dynamicHTML = (function(){
           switch (false) {
           case !commander.putinhtml:
             return "<script>" + bundlec.js + "</script>";
@@ -291,7 +291,7 @@
           }
         }());
         if (commander.html != null) {
-          defaultTemplate = "<!DOCTYPE html>\n<html lang=\"en-us\">\n  <head>\n   <meta charset=\"utf-8\">\n   <title>loading...</title>\n   {{inlineCss}}\n  </head>\n  {{inlineHtml}}\n</html>";
+          defaultTemplate = "<!DOCTYPE html>\n<html lang=\"en-us\">\n  <head>\n   <meta charset=\"utf-8\">\n   <title>loading...</title>\n   <dynamicCSS/>\n  </head>\n  <dynamicHTML/>\n</html>";
           currentTemplate = (function(){
             switch (false) {
             case commander.template == null:
@@ -303,13 +303,13 @@
           applyVariables = function(text, variables){
             var applyVariable;
             applyVariable = function(text, name){
-              return text.replace("{{" + name + "}}", variables[name]);
+              return text.replace("<" + name + "/>", variables[name]);
             };
             return Object.keys(variables).reduce(applyVariable, text);
           };
           html = applyVariables(currentTemplate, {
-            inlineCss: inlineCss,
-            inlineHtml: inlineHtml
+            dynamicCSS: dynamicCSS,
+            dynamicHTML: dynamicHTML
           });
           save(bundleHtml, html);
         }

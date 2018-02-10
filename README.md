@@ -136,9 +136,9 @@ lsxc(options)
     <head>
      <meta charset="utf-8">
      <title>loading...</title>
-     {{inlineCss}}
+     <dynamicCSS/>
     </head>
-    {{inlineHtml}}
+    <dynamicHTML/>
   </html>
 
 ```
