@@ -130,7 +130,7 @@ Add Custom Template
 
 
 create and save template.html
-```
+```html
   <!DOCTYPE html>
   <html lang="en-us">
     <head>
@@ -143,5 +143,5 @@ create and save template.html
 
 ```
 
-use it `lscx -h -t ./template.html`
+use it as `lscx -h -t ./template.html`
 
