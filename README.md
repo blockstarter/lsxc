@@ -17,7 +17,15 @@ Do not think that's it is abandoned. We use it daily. We do not update it becaus
 ```
 
 ```
-We are hiring - please contact a.stegno@gmail.com 
+We can pay for improvements when we accept your pull requests
+```
+
+```
+We are hiring - please contract a.stegno@gmail.com
+```
+
+```
+Join to collaborate https://ide.c9.io/askucher/lsxc
 ```
 
 ### Install
