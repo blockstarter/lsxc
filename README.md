@@ -1,11 +1,10 @@
-# lsxc 
-### Compile Livescript + Pug + SASS + React into Javascript/Css Bundle
+![logo](http://res.cloudinary.com/nixar-work/image/upload/v1516572404/lsx-logo.jpg)
 
-
-
-Store your style, logic and layout in one file. 
-
-![logo](https://cdn-images-1.medium.com/max/1600/1*-cjXqHI7Svt-erj0iiBMng.png)
+* Compile Livescript + Pug + SASS + React into Javascript and Css Bundles
+* Store your style, logic and layout in one file (Component Style)
+* Use benefits of indented languages
+* Build React DOM in functional style
+* Use fast compiler
 
 ### Demo 
 
@@ -18,7 +17,15 @@ Do not think that's it is abandoned. We use it daily. We do not update it becaus
 ```
 
 ```
-We are hiring - please contact a.stegno@gmail.com 
+We can pay for improvements when we accept your pull requests
+```
+
+```
+We are hiring - please contract a.stegno@gmail.com
+```
+
+```
+Join to collaborate https://ide.c9.io/askucher/lsxc
 ```
 
 ### Install
