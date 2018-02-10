@@ -126,10 +126,10 @@ lsxc(options)
 ```
 
 
-Add Custom Template 
+### Add Custom Template 
 
+1. Create and save template.html
 
-create and save template.html
 ```html
   <!DOCTYPE html>
   <html lang="en-us">
@@ -143,5 +143,5 @@ create and save template.html
 
 ```
 
-use it as `lscx -h -t ./template.html`
+2. Use it as `lscx -h -t ./template.html`
 
