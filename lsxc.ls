@@ -24,6 +24,7 @@ commander
   .option('-i, --ssr', 'Isomorphic Server side rendering. Generate Express app (Not Implemented).' + opt)
   .option('-b, --bundle [filename]', 'Generate bundle.js' + opt)
   .option('-h, --html', 'Generate HTML included bundle.js for demo.' + opt)
+  .option('-t, --template [filename]', 'Use custom html template for inline html' + opt)
   .parse(process.argv)
 
 compile commander

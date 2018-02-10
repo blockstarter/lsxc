@@ -188,23 +188,31 @@ compile = (commander, cb)->
       if compilesass? and not commander.putinhtml?
          save bundle-css, bundlec.css
       
-      css-in =  | commander.putinhtml => """<style>#{bundlec.css}</style>"""
-                | _ => """ <link rel="stylesheet" type="text/css" href="./#{bundle-css}">  """
-      html-in = | commander.putinhtml => """<script>#{bundlec.js}</script>"""
-                | _ => """<script type="text/javascript" src="./#{bundle-js}"></script>"""
+      inline-css =  | commander.putinhtml => """<style>#{bundlec.css}</style>"""
+                    | _ => """ <link rel="stylesheet" type="text/css" href="./#{bundle-css}">  """
+      inline-html = | commander.putinhtml => """<script>#{bundlec.js}</script>"""
+                    | _ => """<script type="text/javascript" src="./#{bundle-js}"></script>"""
       if commander.html?
-          print = """
+          default-template = """
           <!DOCTYPE html>
           <html lang="en-us">
             <head>
              <meta charset="utf-8">
-             <title>#{filename}</title>
-             #{css-in}
+             <title>loading...</title>
+             {{inlineCss}}
             </head>
-            #{html-in}
+            {{inlineHtml}}
           </html>
           """
-          save bundle-html, print
+          current-template = 
+            | commander.template? => fs.read-file-sync commander.template, \utf8
+            | _ => default-template
+          apply-variables = (text, variables)->
+              apply-variable = (text, name)->
+                  text.replace "{{#{name}}}", variables[name]
+              Object.keys(variables).reduce(apply-variable, text) 
+          html = apply-variables current-template, { inline-css, inline-html }
+          save bundle-html, html
       if commander.nodestart?
          server-start commander
       if commander.watch
