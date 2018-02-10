@@ -124,3 +124,24 @@ options = {
 lsxc(options)
 
 ```
+
+
+Add Custom Template 
+
+
+create and save template.html
+```
+  <!DOCTYPE html>
+  <html lang="en-us">
+    <head>
+     <meta charset="utf-8">
+     <title>loading...</title>
+     {{inlineCss}}
+    </head>
+    {{inlineHtml}}
+  </html>
+
+```
+
+use it `lscx -h -t ./template.html`
+

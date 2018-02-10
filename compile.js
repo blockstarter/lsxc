@@ -264,7 +264,7 @@
     };
     if (commander.bundle != null) {
       return makeBundle(file, function(err, bundlec){
-        var cssIn, htmlIn, print;
+        var inlineCss, inlineHtml, defaultTemplate, currentTemplate, applyVariables, html;
         if (err != null) {
           return cb2(err);
         }
@@ -274,7 +274,7 @@
         if (compilesass != null && commander.putinhtml == null) {
           save(bundleCss, bundlec.css);
         }
-        cssIn = (function(){
+        inlineCss = (function(){
           switch (false) {
           case !commander.putinhtml:
             return "<style>" + bundlec.css + "</style>";
@@ -282,7 +282,7 @@
             return " <link rel=\"stylesheet\" type=\"text/css\" href=\"./" + bundleCss + "\">  ";
           }
         }());
-        htmlIn = (function(){
+        inlineHtml = (function(){
           switch (false) {
           case !commander.putinhtml:
             return "<script>" + bundlec.js + "</script>";
@@ -291,8 +291,27 @@
           }
         }());
         if (commander.html != null) {
-          print = "<!DOCTYPE html>\n<html lang=\"en-us\">\n  <head>\n   <meta charset=\"utf-8\">\n   <title>" + filename + "</title>\n   " + cssIn + "\n  </head>\n  " + htmlIn + "\n</html>";
-          save(bundleHtml, print);
+          defaultTemplate = "<!DOCTYPE html>\n<html lang=\"en-us\">\n  <head>\n   <meta charset=\"utf-8\">\n   <title>loading...</title>\n   {{inlineCss}}\n  </head>\n  {{inlineHtml}}\n</html>";
+          currentTemplate = (function(){
+            switch (false) {
+            case commander.template == null:
+              return fs.readFileSync(commander.template, 'utf8');
+            default:
+              return defaultTemplate;
+            }
+          }());
+          applyVariables = function(text, variables){
+            var applyVariable;
+            applyVariable = function(text, name){
+              return text.replace("{{" + name + "}}", variables[name]);
+            };
+            return Object.keys(variables).reduce(applyVariable, text);
+          };
+          html = applyVariables(currentTemplate, {
+            inlineCss: inlineCss,
+            inlineHtml: inlineHtml
+          });
+          save(bundleHtml, html);
         }
         if (commander.nodestart != null) {
           serverStart(commander);
