@@ -1,20 +1,18 @@
+# LSX Compiler
+
 ![logo](http://res.cloudinary.com/nixar-work/image/upload/v1516572404/lsx-logo.jpg)
 
-* Compile Livescript + Pug + SASS + React into Javascript and Css Bundles
-* Store your style, logic and layout in one file (Component Style)
+* Compile LiveScript + Pug + SASS + React into JavaScript and CSS bundles
+* Describe the styles, logic and layout of your app in one file (component style)
 * Use benefits of indented languages
 * Build React DOM in functional style
 * Use fast compiler
 
-### Demo 
+## Demo 
 
 [![Demo](https://img.youtube.com/vi/Z5NuIIHBsqg/0.jpg)](https://youtu.be/Z5NuIIHBsqg)
 
-### News 
-
-```
-Do not think that's it is abandoned. We use it daily. We do not update it because it is stable.
-```
+## News 
 
 ```
 We can pay for improvements when we accept your pull requests
@@ -28,18 +26,18 @@ We are hiring - please contract a.stegno@gmail.com
 Join to collaborate https://ide.c9.io/askucher/lsxc
 ```
 
-### Install
+## Install
 
-```
+```sh
 npm i lsxc -g
 
-#for demo
+#next modules we use for demo:
 npm i react react-dom mobx mobx-react --save 
 ```
 
-### Example 
+## Example 
 
-#### Code (file.ls)
+### Code (file.ls)
 
 ```Livescript
 require! {
@@ -54,7 +52,6 @@ require! {
   padding-left: 5px
   &:hover
     color: orange
-
 
 btn = ({click, text})->
     a.pug.btn(target='blank' on-click=click) #{text} 
@@ -80,7 +77,6 @@ Main = observer ({store})->
           btn {text: 'Remove', click: remove todo}
     input {store}
     hr.pug 
-    
 
 window.onload = ->
   store = observable do
@@ -92,58 +88,58 @@ window.onload = ->
     document.document-element
 ```
 
-#### Compile 
+### Compile 
 
-```
+```sh
 lsxc -skhbc file.ls
-
 ```
 
-#### Help
+### Help
 
-```
+To see all available options for `lsxc` run next command:
+
+```sh
 lsxc --help
 ```
 
+## Run programmatically
 
-
-### Run Programmatically
-
-#### Javascript
+### JavaScript
 
 ```Javascript
-lsxc = require('lsxc');
+let lsxc = require('lsxc');
 
-options = {
+let opts = {
     file: "filename",
     target: "resultname",
     bundle: "bundle",
     html: "index"
-}
+};
 
-lsxc(options)
-
+lsxc(opts);
 ```
 
+## Use a custom HTML template 
 
-### Add Custom Template 
-
-1. Create and save template.html
+### 1. Create a file `template.html`
 
 ```html
-  <!DOCTYPE html>
-  <html lang="en-us">
-    <head>
-      <meta charset="utf-8">
-      <title>The Perfect App</title>
-      <dynamicCSS/>
-    </head>
-    <body>
-      <dynamicHTML/>
-    </body>
-  </html>
-
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <title>The Perfect App</title>
+    <dynamicCSS/>
+  </head>
+  <body>
+    <dynamicHTML/>
+  </body>
+</html>
 ```
 
-2. Use it as `lscx -h -t ./template.html`
+### 2. Then compile an app:
+
+```sh
+lscx -h -t ./template.html
+```
 
