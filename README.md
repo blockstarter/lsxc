@@ -134,11 +134,13 @@ lsxc(options)
   <!DOCTYPE html>
   <html lang="en-us">
     <head>
-     <meta charset="utf-8">
-     <title>loading...</title>
-     <dynamicCSS/>
+      <meta charset="utf-8">
+      <title>The Perfect App</title>
+      <dynamicCSS/>
     </head>
-    <dynamicHTML/>
+    <body>
+      <dynamicHTML/>
+    </body>
   </html>
 
 ```
